@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+{% load static from staticfiles %}
+{% block head %}
+	<!-- Standard Meta -->
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+	<!-- Site Properities -->
+	<title></title>
+	<link href="//cdn.bootcss.com/semantic-ui/2.1.3/semantic.css" rel="stylesheet">
+	<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.js"></script>
+	<script src="//cdn.bootcss.com/semantic-ui/2.1.3/semantic.js"></script>
+	<!--- Example Javascript -->
+	<script>
+	$(document).ready(function() {
+	$('.mood .ui.dropdown')
+	.dropdown({
+	on: 'hover',
+	onChange:function(value, text, $selectedItem){
+		$('#scoreprocess').progress({
+			value:value,
+			text: {
+					active  : '心情飙升中',
+					success : '满满的好心情'
+					}
+			});
+		}
+	})
+	;
+	$('.overlay').visibility({
+	type: 'fixed',
+	offset: 80
+	});
+	// fix main menu to page on passing
+	$('.main.menu').visibility({
+	type: 'fixed'
+	});
+	{% for m in month %}
+							$('#mscoreview1{{m}}')
+									.progress('increment')
+									;
+							$('#mscoreview2{{m}}')
+									.progress('increment')
+									;
+	{% endfor %}
+	$('.keywords .ui.dropdown')
+	.dropdown({
+	on: 'hover',
+					allowAdditions:true
+	})
+	;
+	$('.keywords .button')
+			.on('click', function() {
+			$('.keywords .ui.dropdown')
+			.dropdown('clear')
+			;
+			})
+			;
+			$('.buttons .getvalue')
+			.on('click', function() {
+				var $form =$('.ui form'),mood=$form.form('get value','mood');
+				$('#example1').progress({
+					value: mood
+					});
+			console.log(mood);
+			})
+			;
+	});
+	</script>
+	<script type="text/javascript">
+	$(function () {
+	var xAxisData = new Array(),
+		yAxisData1 = new Array(),
+		yAxisData2 = new Array();
+	{%for mi,yi,m,s in bothMonthScore%}
+		xAxisData[{{m | add:'-1'}}]={{m}};
+		yAxisData1[{{m | add:'-1'}}]={{mi}};
+		yAxisData2[{{m | add:'-1'}}]={{yi}};
+	{%endfor%}
+	$('#highcharts').highcharts({
+	title: {
+	text: '本年一览',
+	x: -20 //center
+	},
+	subtitle: {
+	text: '',
+	x: -20
+	},
+	xAxis: {
+	categories: xAxisData
+	},
+	yAxis: {
+	title: {
+	text: '心情指数'
+	},
+	plotLines: [{
+	value: 0,
+	width: 1,
+	color: '#808080'
+	}]
+	},
+	tooltip: {
+	valueSuffix: ''
+	},
+	legend: {
+	layout: 'vertical',
+	align: 'right',
+	verticalAlign: 'middle',
+	borderWidth: 0
+	},
+	series: [{
+	name: '我',
+	data: yAxisData1
+	}, {
+	name: 'TA',
+	data: yAxisData2
+	}]
+	});
+	});
+	</script>
+	<script>
+	$(document)
+	.ready(function() {
+	// fix menu when passed
+	$('.masthead')
+	.visibility({
+	once: false,
+	onBottomPassed: function() {
+	$('.fixed.menu').transition('fade in');
+	},
+	onBottomPassedReverse: function() {
+	$('.fixed.menu').transition('fade out');
+	}
+	})
+	;
+	// create sidebar and attach to menu open
+	$('.ui.sidebar')
+	.sidebar('attach events', '.toc.item')
+	;
+	})
+	;
+	</script>
+	<style type="text/css">
+	body {
+	background-color: #FFFFFF;
+	}
+	.main.container {
+	margin-top: 2em;
+	}
+	.main.menu {
+	margin-top: 4em;
+	border-radius: 0;
+	border: none;
+	box-shadow: none;
+	transition:
+	box-shadow 0.5s ease,
+	padding 0.5s ease
+	;
+	}
+	.hidden.menu {
+	display: none;
+	}
+	.main.menu .item img.logo {
+	margin-right: 1.5em;
+	}
+	.overlay {
+	float: left;
+	margin: 0em 3em 1em 0em;
+	}
+	.overlay .menu {
+	position: relative;
+	left: 0;
+	transition: left 0.5s ease;
+	}
+	.main.menu.fixed {
+	background-color: #FFFFFF;
+	border: 1px solid #DDD;
+	box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
+	}
+	.overlay.fixed .menu {
+	left: 800px;
+	}
+	.text.container .left.floated.image {
+	margin: 2em 2em 2em -4em;
+	}
+	.text.container .right.floated.image {
+	margin: 2em -4em 2em 2em;
+	}
+	.ui.footer.segment {
+	margin: 5em 0em 0em;
+	padding: 5em 0em;
+	}
+	</style>
+{% endblock %}
+{% block content %}
+	<body>
+		<!-- Following Menu -->
+		<!-- Following Menu -->
+		<div class="ui large top fixed hidden menu">
+			<div class="ui container">
+				<a class="active item" href="/diary/">首页</a>
+				<a class="item" href="/diary/{{date|date:"Y/m/"}}">月档案</a>
+				<a class="item" href="/diary/{{date|date:"Y/"}}">年档案</a>
+				<a class="item" href="/blog/">博客</a>
+				<div class="right menu">
+					<div class="item">
+						<a class="ui button" href="/logout/">退出</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Sidebar Menu -->
+		<div class="ui vertical  sidebar menu">
+			<a class="active item" href="/diary/">首页</a>
+			<a class="item" href="/diary/{{date|date:"Y/m/"}}">月档案</a>
+			<a class="item" href="/diary/{{date|date:"Y/"}}">年档案</a>
+			<a class="item" href="/blog/">博客</a>
+			<a class="item" href="/logout/">退出</a>
+		</div>
+		<div class="ui  vertical masthead center aligned segment">
+			<div class="ui container">
+				<div class="ui large secondary  pointing menu">
+					<a class="toc item">
+						<i class="sidebar icon"></i>
+					</a>
+					<a class="active item" href="/diary/">首页</a>
+					<a class="item" href="/diary/{{date|date:"Y/m/"}}">月档案</a>
+					<a class="item" href="/diary/{{date|date:"Y/"}}">年档案</a>
+					<a class="item" href="/blog/">博客</a>
+					<div class="right item">
+						<a class="ui button" href="/diary/logout/">退出</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class ="ui gird container " >
+			
+			<div class="ui message">
+				<h1 class="ui header">{{user.username}},欢迎回来哦！</h1>
+				<div class="ui two column grid">
+					<div class="left floated column">
+						<p>今天是{{date|date:"Y年m月d日"}}。开心，快乐，郁闷，忧伤，不管怎样，都写下来吧！</p>
+					</div>
+					<div class="right floated  column">
+						<a href="/diary/{{year}}/">
+							<div class="ui green tag label">我的本年心情指数:<div class="detail">{{myYearScore|floatformat:"1"}}</div></div>
+							<div class="ui teal tag label">TA的本年心情指数:<div class="detail">{{yourYearScore|floatformat:"1"}}</div></div>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class ="ui gird container" >
+			<div class="ui horizontal divider"><i class="red heartbeat icon"></i></div>
+			<h2 class="ui center aligned header">{{year}}年</h2>
+			<div class="ui three column grid">
+				{% for mi,yi,m,s in bothMonthScore %}
+					<div class="five wide column">
+						<div class="ui middle aligned animated list">
+							<h4 class="ui center aligned header">{{m}}月</h4>
+							<div class="item">
+								<div class="ui indicating large progress active" data-value="{{mi}}" data-total="{{s}}" id="mscoreview1{{m}}">
+									<div class="bar" ><div class="progress"></div></div>
+									<div class="label">我:{{mi|floatformat:"1"}}</div>
+								</div>
+							</div>
+							<div class="item">
+								<div class="ui indicating large progress active" data-value="{{yi}}" data-total="{{s}}" id="mscoreview2{{m}}">
+									<div class="bar" ><div class="progress"></div></div>
+									<div class="label">TA:{{yi|floatformat:"1"}}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+		<div class ="ui gird container " >
+			<script src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+			<script src="http://cdn.hcharts.cn/highcharts/modules/exporting.js"></script>
+			<div id="highcharts" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+		</div>
+		<div class ="ui gird container " >
+			<div class="ui divider"></div>
+			<div class="ui centered grid">
+				<div class="ui labeled icon horizontal menu">
+					<a class="item" href="/diary/{{lastyear}}"><i class="chevron left icon"></i> 前一年</a>
+					<a class="item" href="/diary/"><i class="chevron up icon"></i> 今天</a>
+					<a class="item" href="/diary/{{nextyear}}"><i class="chevron right icon"></i> 后一年</a>
+				</div>
+			</div>
+		</div>
+		<div class="ui  vertical footer segment">
+			<div class="ui container">
+				<div class="ui stackable  divided equal height stackable grid">
+					<div class="three wide column">
+						<h4 class="ui  header">关于</h4>
+						<div class="ui  link list">
+							<a href="#" class="item">我们的哦</a>
+							<p></p>
+						</div>
+					</div>
+					<div class="three wide column">
+					</div>
+				</div>
+				<div class="seven wide column">
+				</div>
+			</div>
+		</div>
+	</body>
+{% endblock %}
