@@ -15,27 +15,31 @@
 	<script src="{% static "bootstrap/magicsuggest/magicsuggest-min.js"%}"></script>
 	<script type="text/javascript">
 	$(document).ready(function() {
-		var data = new Array();		
-		var i = 0;
-		i=0
+	var data = new Array();
+	var i = 0;
+	i=0
 	{% for ikey in keywords %}
-		data[i]="{{ikey.text}}";
-		i+=1;
+			data[i]="{{ikey.text}}";
+			i+=1;
 	{% endfor %}
-		$('#magicsuggest')
-		.magicSuggest({
-			allowFreeEntries: true,
-			data: data
-		});
+	$('#magicsuggest')
+	.magicSuggest({
+	allowFreeEntries: true,
+	data: data
+	});
 	});
 	</script>
 	<script type="text/javascript">
 	$(document).ready(function(){
-            var options=$("#mood").val();
-            console.log(options);
-            var options=$("#keywords").val();
-            console.log(options);
-        });
+		$("#moodform").change(function(e){
+			var val=0;
+			val=$("select option:selected").data("value");
+			console.log($("#score"));
+			e.preventDefault();
+			$("#score").progressbar(val);
+			console.log(val);
+		});
+	});
 	</script>
 	<style type="text/css">
 	body {
@@ -92,38 +96,39 @@
 					<img src="{% static "pic.png" %}" class="img-responsive" alt="Logo">
 				</div>
 				<hr>
-				<form class="form" method = "post">
+				<form class="form" method = "post" id="moodform">
 					{% csrf_token %}
 					<h2>选择一下心情吧</h2>
 					<div class="row">
 						
 						<div class="col-xs-3 col-lg-2">
-							<select class="form-control" id="mood" name="score">
-								<option>很伤心</option>
-								<option>不开心</option>
-								<option>还可以</option>
-								<option>开心吧</option>
-								<option>好开心</option>
+							<input type="hidden" id="mood" value="" />
+							<select class="form-control" id="moodvalue">
+								<option data-value="1">很伤心</option>
+								<option data-value="2">不开心</option>
+								<option data-value="3">还可以</option>
+								<option data-value="4">开心吧</option>
+								<option data-value="5">好开心</option>
 							</select>
 						</div>
 						<div class="col-xs-12 col-sm-6 col-lg-8">
-							<div class="progress" name="keywords">
-								<div class="progress-bar progress-bar-striped active" id="score" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%"><span class="sr-only">40% Complete (success)</span>
+							<div class="progress" id="score">
+								<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
+					<hr>
+					<h2>今天的关键词</h2>
+					<div name="keywords" >
+						<input id="magicsuggest">
+					</div>
+					<hr>
+					<h2>今天的故事</h2>
+					<textarea class="form-control" rows="8" name="contenttext"></textarea>
+					<button class="btn btn-success btn-lg btn-block" type="submit">写好了</button>
+				</form>
 				<hr>
-				<h2>选择一下心情吧</h2>
-				<div name="keywords" >
-					<input id="magicsuggest">
-				</div>
-				<hr>
-				<h2>今天的故事</h2>
-				<textarea class="form-control" rows="8" name="contenttext"></textarea>
-				<button class="btn btn-success btn-lg btn-block" type="submit">写好了</button>
-			</form>
-			<hr>
-			
-		</body>
-	{% endblock %}
+				
+			</body>
+		{% endblock %}
