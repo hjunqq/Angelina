@@ -8,6 +8,7 @@
 	<title>我们的日记本--{{date|date:"Y-m-d"}}</title>
 	<link href="{% static "bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
 	<link href="{% static "bootstrap/magicsuggest/magicsuggest-min.css" %}" rel="stylesheet">
+	<!-- <link rel="stylesheet" type="text/css" href="{% static "bootstrap/css/bootstrap-progressbar.css"%}"> -->
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 	<script src="{% static "bootstrap/js/jquery.min.js" %}"></script>
 	<!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -19,8 +20,8 @@
 	var i = 0;
 	i=0
 	{% for ikey in keywords %}
-			data[i]="{{ikey.text}}";
-			i+=1;
+												data[i]="{{ikey.text}}";
+												i+=1;
 	{% endfor %}
 	$('#magicsuggest')
 	.magicSuggest({
@@ -29,18 +30,17 @@
 	});
 	});
 	</script>
-	<script type="text/javascript">
+	<!--<script type="text/javascript">
 	$(document).ready(function(){
-		$("#moodform").change(function(e){
+		$("#moodform").change(function(){
 			var val=0;
 			val=$("select option:selected").data("value");
-			console.log($("#score"));
-			e.preventDefault();
-			$("#score").progressbar(val);
+			val=val/5.0*100;
+			$("#score").css("width",val+"%");
 			console.log(val);
 		});
 	});
-	</script>
+	</script>-->
 	<style type="text/css">
 	body {
 	padding-top: 40px;
@@ -81,54 +81,70 @@
 				</div>
 			</nav>
 			<div class="container">
-				<div class="jumbotron">
-					<div class="row">
-						<h2>{{user.username}},欢迎回来哦！</h2>
-						<p>今天是{{date|date:"Y年m月d日"}}。开心，快乐，郁闷，忧伤，不管怎样，都写下来吧！</p>
-						<div class="text-right">
-							<p class="label label-success">我的本月指数:
-							{{myMonthScore|floatformat:"1"}}</p>
-							<p class="label label-warning">TA的本月指数:{{yourMonthScore|floatformat:"1"}}</p>
-						</div>
+				<div class = "col-sm-8">
+					
+					<div class="maincontent">
+						<img src="{% static "pic.png" %}" class="img-responsive" alt="Logo">
 					</div>
-				</div>
-				<div class="maincontent">
-					<img src="{% static "pic.png" %}" class="img-responsive" alt="Logo">
-				</div>
-				<hr>
-				<form class="form" method = "post" id="moodform">
-					{% csrf_token %}
-					<h2>选择一下心情吧</h2>
-					<div class="row">
-						
-						<div class="col-xs-3 col-lg-2">
-							<input type="hidden" id="mood" value="" />
-							<select class="form-control" id="moodvalue">
-								<option data-value="1">很伤心</option>
-								<option data-value="2">不开心</option>
-								<option data-value="3">还可以</option>
-								<option data-value="4">开心吧</option>
-								<option data-value="5">好开心</option>
-							</select>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-lg-8">
-							<div class="progress" id="score">
-								<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+					<hr>
+					<form class="form" method = "post" id="moodform">
+						{% csrf_token %}
+						<h2>今天的故事</h2>
+						<textarea class="form-control" rows="8" name="contenttext"></textarea>
+						<div class="row">
+							<div class = "col-sm-3">
+								<h4>今天的关键词</h4>
+							</div>
+							<div class = "col-sm-9">
+								<div >
+									<input id="magicsuggest" name="abstract" >
 								</div>
 							</div>
 						</div>
-					</div>
+						<div class="row">
+							<div class = "col-sm-3">
+								<h4>选择一下心情吧</h4>
+							</div>
+							<div class = "col-sm-9">
+								<div class="btn-group btn-group-justified" role="group" aria-label="...">
+									<div class="btn-group" role="group">
+										<button type="button" class="btn btn-default">很伤心</button>
+									</div>
+									<div class="btn-group" role="group">
+										<button type="button" class="btn btn-primary">不开心</button>
+									</div>
+									<div class="btn-group" role="group">
+										<button type="button" class="btn btn-success">还可以</button>
+									</div>
+									<div class="btn-group" role="group">
+										<button type="button" class="btn btn-info">开心吧</button>
+									</div>
+									<div class="btn-group" role="group">
+										<button type="button" class="btn btn-warning">开心吧</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<button class="btn btn-success btn-lg btn-block" type="submit">写好了</button>
+						<hr>
+						
+					</form>
 					<hr>
-					<h2>今天的关键词</h2>
-					<div name="keywords" >
-						<input id="magicsuggest">
+				</div>
+				<div class ="col-sm-3">
+					<div class="jumbotron">
+						<div class="row">
+							<h2>{{user.username}}</h2>
+							<h3>欢迎回来哦！</h3>
+							<p>今天是{{date|date:"Y年m月d日"}}。</p><p>开心，快乐，郁闷，忧伤，不管怎样，都写下来吧！</p>
+							<div class="text-right">
+								<p class="label label-success">我的本月指数:{{myMonthScore|floatformat:"1"}}</p>
+								<p></p>
+								<p class="label label-warning">TA的本月指数:{{yourMonthScore|floatformat:"1"}}</p>
+							</div>
+						</div>
 					</div>
-					<hr>
-					<h2>今天的故事</h2>
-					<textarea class="form-control" rows="8" name="contenttext"></textarea>
-					<button class="btn btn-success btn-lg btn-block" type="submit">写好了</button>
-				</form>
-				<hr>
-				
+				</div>
 			</body>
 		{% endblock %}
