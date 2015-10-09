@@ -18,10 +18,10 @@
 	$(document).ready(function() {
 	var data = new Array();
 	var i = 0;
-	i=0
+	i=0;
 	{% for ikey in keywords %}
-												data[i]="{{ikey.text}}";
-												i+=1;
+			data[i]="{{ikey.text}}";
+			i+=1;
 	{% endfor %}
 	$('#magicsuggest')
 	.magicSuggest({
@@ -131,19 +131,23 @@
 						
 					</form>
 					<hr>
+					<div class="embed-responsive embed-responsive-16by9">
+							<iframe class="embed-responsive-item" src="http://cn.bing.com/dict/clienthomepagev2"></iframe>
+						</div>
 				</div>
 				<div class ="col-sm-3">
-					<div class="jumbotron">
-						<div class="row">
-							<h2>{{user.username}}</h2>
-							<h3>欢迎回来哦！</h3>
-							<p>今天是{{date|date:"Y年m月d日"}}。</p><p>开心，快乐，郁闷，忧伤，不管怎样，都写下来吧！</p>
-							<div class="text-right">
-								<p class="label label-success">我的本月指数:{{myMonthScore|floatformat:"1"}}</p>
-								<p></p>
-								<p class="label label-warning">TA的本月指数:{{yourMonthScore|floatformat:"1"}}</p>
-							</div>
+					<div class="row">
+						<h2>{{user.username}}</h2>
+						<h3>欢迎回来哦！</h3>
+						<p>今天是{{date|date:"Y年m月d日"}}。</p><p>开心，快乐，郁闷，忧伤，不管怎样，都写下来吧！</p>
+						<div class="text-right">
+							<p class="label label-success">我的本月指数:{{myMonthScore|floatformat:"1"}}</p>
+							<p></p>
+							<p class="label label-warning">TA的本月指数:{{yourMonthScore|floatformat:"1"}}</p>
+							<p></p>
 						</div>
+						
+						
 					</div>
 				</div>
 			</body>
